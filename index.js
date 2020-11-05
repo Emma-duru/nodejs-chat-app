@@ -43,7 +43,28 @@ io.on("connection", (socket) => {
   });
 
   // update Username in the client
-  const updateUsername = () => {
+  const updateUsernames = () => {
     io.sockets.emit("get users", users);
   };
+
+  // Listen on new_message
+  socket.on("new_message", (data) => {
+    // broadcast the new message
+    io.sockets.emit("new_message", {
+      message: data.message,
+      username: socket.username,
+      color: socket.color,
+    });
+  });
+
+  // Disconnect
+  socket.on("disconnect", (data) => {
+    if (!socket.username) return;
+    // Find the user and delete from the users list
+    users.filter((user) => user.id !== socket.id);
+    // Update the users list
+    updateUsernames();
+    // Remove the connections from the connections list
+    connections.filter((connection) => connection !== socket);
+  });
 });
