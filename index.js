@@ -1,17 +1,16 @@
-const app = require("express")();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http);
+//  requiring packages
+const express = require("express");
+const app = express();
+let randomColor = require("randomcolor");
+const uuid = require("uuid");
 
+// middleware
+app.use(express.static("public"));
+
+// routes
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
-io.on("connection", (socket) => {
-  socket.on("chat message", (msg) => {
-    io.emit("chat message", msg);
-  });
-});
-
-http.listen(3000, () => {
-  console.log("Listening on *:3000");
-});
+// Listen on port 3000
+const server = app.listen(process.env.PORT || 3000);
