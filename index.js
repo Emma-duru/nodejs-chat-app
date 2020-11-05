@@ -67,4 +67,9 @@ io.on("connection", (socket) => {
     // Remove the connections from the connections list
     connections.filter((connection) => connection !== socket);
   });
+
+  //   listen on typing
+  socket.on("typing", (data) => {
+    socket.broadcast.emit("typing", { username: socket.username });
+  });
 });
